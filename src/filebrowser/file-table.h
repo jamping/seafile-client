@@ -11,6 +11,7 @@
 
 #include "api/server-repo.h"
 #include "seaf-dirent.h"
+#include "data-cache.h"
 
 #include "thumbnail-service.h"
 
@@ -153,6 +154,8 @@ private:
     QString getTransferProgress(const SeafDirent& dirent) const;
 
     QList<SeafDirent> dirents_;
+
+    QList<FileCache::CacheEntry> info_;
 
     QHash<QString, QString> progresses_;
 

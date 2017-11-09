@@ -10,6 +10,7 @@
 #include "seafile-applet.h"
 
 #include "file-browser-dialog.h"
+#include "data-cache.h"
 #include "data-mgr.h"
 #include "transfer-mgr.h"
 #include "tasks.h"
@@ -150,12 +151,22 @@ void FileTableViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
         painter->drawText(rect,
                           Qt::AlignLeft | Qt::AlignVCenter | Qt::TextSingleLine,
                           fitTextToWidth(text, option.font, rect.width() - 20));
-        QToolButton toolButton;
-        painter->save();         //保存painter状态
-        QPixmap warning_pixmap = QIcon(":/images/main-panel/network-error.png").pixmap(kLockIconSize/2, kLockIconSize);
-        painter->drawPixmap(option_rect.topLeft() + QPoint(kMarginLeft*20, size.height() / 3 - 1),warning_pixmap);
-        toolButton.render(painter);
-        painter->restore();
+        FileCache::CacheEntry info;
+        QList<FileCache::CacheEntry>ret = FileCache::instance()->getFailedUploads(info.account_sig, info.repo_id, info.path);
+        QList<FileCache::CacheEntry>::iterator i = ret.begin();
+        //QString name = model->data(model->index(index.row(), FILE_COLUMN_NAME), Qt::DisplayRole).value<QString>();
+        for(i=ret.begin(); i !=ret.end(); ++i) {
+            //seafApplet->messageBox(tr("%1").arg(text));
+            //qWarning("789789");
+            if((*i).path == text) {
+                QToolButton toolButton;
+                painter->save();         //保存painter状态
+                QPixmap warning_pixmap = QIcon(":/images/main-panel/network-error.png").pixmap(kLockIconSize/2, kLockIconSize);
+                painter->drawPixmap(option_rect.topLeft() + QPoint(kMarginLeft*20, size.height() / 3 - 1),warning_pixmap);
+                toolButton.render(painter);
+                painter->restore();
+            }
+        }
     }
     break;
     case FILE_COLUMN_SIZE:
