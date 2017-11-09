@@ -150,6 +150,12 @@ void FileTableViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
         painter->drawText(rect,
                           Qt::AlignLeft | Qt::AlignVCenter | Qt::TextSingleLine,
                           fitTextToWidth(text, option.font, rect.width() - 20));
+        QToolButton toolButton;
+        painter->save();         //保存painter状态
+        QPixmap warning_pixmap = QIcon(":/images/main-panel/network-error.png").pixmap(kLockIconSize/2, kLockIconSize);
+        painter->drawPixmap(option_rect.topLeft() + QPoint(kMarginLeft*20, size.height() / 3 - 1),warning_pixmap);
+        toolButton.render(painter);
+        painter->restore();
     }
     break;
     case FILE_COLUMN_SIZE:
